@@ -37,20 +37,65 @@ const gameBoard = (() => {
 })();
 
 const displayController = (() => {
+  const menuContainer = document.querySelector(".menu-container");
   const hideMenu = () => {
-    const menuContainer = document.querySelector(".menu-container");
     const menuContent = document.querySelector(".menu-content");
     menuContent.classList.remove("slide-in-left");
     menuContent.classList.add("slide-out-blurred-top");
     menuContainer.classList.add("hidden");
   };
 
+  const showWinner = (winner, looser) => {
+    menuContainer.innerHTML = "";
+    menuContainer.classList.remove("hidden");
+    menuContainer.innerHTML = `
+    <div class="menu-content slide-in-left">
+      <div class="welcome-message">
+        <h1>🎉Congratulations!🎉 <br>${winner.getName()} you won!</h1>
+        <h3>${looser.getName()} do you want a revenge?</h3>
+      </div>
+      
+      <div class="start">
+        <button
+          type="button"
+          class="button"
+          onclick="displayController.hideMenu();gameController.playRound();"
+        >
+          PLAY AGAIN
+        </button>
+      </div>
+    </div>
+    `;
+  };
+
+  const showTie = () => {
+    menuContainer.innerHTML = "";
+    menuContainer.classList.remove("hidden");
+    menuContainer.innerHTML = `
+    <div class="menu-content slide-in-left">
+      <div class="welcome-message">
+        <h1>🤔Hmmm..🤔<br>Great minds think alike I guess</h1>
+        <h3>Do you want to play again?</h3>
+      </div>
+      
+      <div class="start">
+        <button
+          type="button"
+          class="button"
+          onclick="displayController.hideMenu();gameController.playRound();"
+        >
+          PLAY AGAIN
+        </button>
+      </div>
+    </div>
+    `;
+  };
   const resetFields = () => {
     fields.forEach((field) => {
       field.textContent = "";
     });
   };
-  return { resetFields, hideMenu };
+  return { resetFields, hideMenu, showWinner, showTie };
 })();
 
 const gameController = (() => {
@@ -78,22 +123,16 @@ const gameController = (() => {
 
       if (combination.every((mark) => mark === "X")) {
         console.log("X wins");
+        displayController.showWinner(player1, player2);
         gameBoard.removeFieldListener(handler);
-        setTimeout(() => {
-          resetGame();
-        }, 2000);
       } else if (combination.every((mark) => mark === "O")) {
         console.log("O wins");
+        displayController.showWinner(player2, player1);
         gameBoard.removeFieldListener(handler);
-        setTimeout(() => {
-          resetGame();
-        }, 2000);
       } else if (!board.includes("")) {
         console.log("TIE");
+        displayController.showTie();
         gameBoard.removeFieldListener(handler);
-        setTimeout(() => {
-          resetGame();
-        }, 2000);
       }
     }
   };
@@ -108,10 +147,15 @@ const gameController = (() => {
   };
 
   const playRound = () => {
-    const playerOneInput = document.getElementById("playerOne");
-    const playerTwoInput = document.getElementById("playerTwo");
-    player1 = Player("X", playerOneInput.value);
-    player2 = Player("O", playerTwoInput.value);
+    resetGame();
+
+    if (!player1 || !player2) {
+      const playerOneInput = document.getElementById("playerOne");
+      const playerTwoInput = document.getElementById("playerTwo");
+      player1 = Player("X", playerOneInput.value);
+      player2 = Player("O", playerTwoInput.value);
+    }
+
     activePlayer = player1;
 
     handler = (e) => {

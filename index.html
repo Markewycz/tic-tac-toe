@@ -38,7 +38,11 @@
         </div>
         <div class="players">
           <div class="player-photo">
-            <img src="images/player.png" class="player-image" />
+            <img
+              src="images/player.png"
+              class="player-image"
+              alt="player avatar"
+            />
           </div>
           <div class="player-name">
             <input
@@ -46,6 +50,7 @@
               name="name"
               id="playerOne"
               class="input-player"
+              pattern="/^.{0,10}$/"
               required
             />
           </div>
@@ -53,7 +58,11 @@
         <div class="middle-part"><span>VS.</span></div>
         <div class="players">
           <div class="player-photo">
-            <img src="images/player.png" class="player-image" />
+            <img
+              src="images/player.png"
+              class="player-image"
+              alt="player avatar"
+            />
           </div>
           <div class="player-name">
             <input
@@ -61,6 +70,7 @@
               name="name"
               id="playerTwo"
               class="input-player"
+              pattern="/^.{0,10}$/"
               required
             />
           </div>
@@ -73,10 +83,6 @@
           >
             START
           </button>
-          <!-- <div class="rules">
-            <span>?</span>
-            <div class="rules-popup"></div>
-          </div> -->
         </div>
       </div>
     </div>
