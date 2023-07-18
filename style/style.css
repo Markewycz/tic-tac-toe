@@ -348,3 +348,69 @@ body {
     opacity: 1;
   }
 }
+
+/* MEDIA QUERIES */
+@media (max-width: 450px) {
+  .menu-content {
+    grid-template-columns: 1fr;
+    margin: 10px;
+  }
+
+  .welcome-message h1 {
+    font-size: 2.5rem;
+  }
+
+  .middle-part {
+    font-size: 4rem;
+    margin-bottom: 10px;
+  }
+
+  .players {
+    margin-bottom: 10px;
+  }
+
+  .player-photo {
+    width: 80px;
+    height: 90px;
+  }
+
+  .fields-container {
+    width: 360px;
+  }
+
+  .field {
+    width: 120px;
+    height: 120px;
+  }
+
+  .start {
+    margin-top: 20px;
+    width: 40%;
+  }
+
+  .input-player {
+    width: 250px;
+  }
+  .ultimate::after {
+    content: "\a";
+    white-space: pre;
+  }
+
+  .welcome-message.winner {
+    margin-bottom: 10px;
+  }
+  .welcome-message.winner h1 {
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .start-winner {
+    width: 80%;
+    margin-top: 10px;
+  }
+
+  .winner-content {
+    grid-template-rows: auto auto;
+  }
+}

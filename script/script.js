@@ -78,13 +78,13 @@ const displayController = (() => {
     menuContainer.innerHTML = "";
     menuContainer.classList.remove("hidden");
     menuContainer.innerHTML = `
-    <div class="menu-content slide-in-left">
-      <div class="welcome-message">
+    <div class="menu-content winner-content slide-in-left">
+      <div class="welcome-message winner">
         <h1>🎉Congratulations!🎉 <br>${winner.getName()} you won!</h1>
         <h3>${looser.getName()} do you want a revenge?</h3>
       </div>
       
-      <div class="start">
+      <div class="start start-winner">
         <button
           type="button"
           class="button"
@@ -101,13 +101,13 @@ const displayController = (() => {
     menuContainer.innerHTML = "";
     menuContainer.classList.remove("hidden");
     menuContainer.innerHTML = `
-    <div class="menu-content slide-in-left">
-      <div class="welcome-message">
+    <div class="menu-content winner-content slide-in-left">
+      <div class="welcome-message winner">
         <h1>🤔Hmmm..🤔<br>Great minds think alike I guess</h1>
         <h3>Do you want to play again?</h3>
       </div>
       
-      <div class="start">
+      <div class="start start-winner">
         <button
           type="button"
           class="button"
@@ -224,20 +224,23 @@ const gameController = (() => {
     playersInit();
 
     handler = (e) => {
-      if (!isUserTurn) return;
-
+      if (!isUserTurn) return; // PREVENT USER CLICKING WHEN AI TURN
       const id = +e.target.dataset.id - 1;
 
+      // PLAYER VS PLAYER
       if (
-        activePlayer === player1 &&
-        gameBoard.setField(activePlayer.getSign(), id)
+        (activePlayer === player1 &&
+          gameBoard.setField(activePlayer.getSign(), id)) ||
+        (activePlayer === player2 &&
+          gameBoard.setField(activePlayer.getSign(), id))
       ) {
         gameBoard.renderBoard();
         if (checkWin()) return;
         changePlayer();
-        isUserTurn = false;
+        if (vsAi) isUserTurn = false;
       }
 
+      // VS AI
       if (vsAi && activePlayer === player2) {
         isAITurn = true;
         const timeoutDuration = Math.floor(Math.random() * 1400) + 700;
