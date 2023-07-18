@@ -60,6 +60,7 @@ const displayController = (() => {
         if (enemys[1].classList.contains("selected")) {
           gameController.setVsAi(true);
           playerTwoInput.classList.add("disable");
+          playerTwoInput.value = "";
         } else {
           gameController.setVsAi(false);
           playerTwoInput.classList.remove("disable");
