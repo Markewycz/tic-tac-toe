@@ -55,7 +55,7 @@ body {
   /* border: 1px solid; */
   cursor: pointer;
 
-  font-size: 4rem;
+  font-size: 6rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -192,6 +192,9 @@ body {
   border: 2px solid;
   padding: 5px;
   border-bottom: 4px solid;
+  font-size: 24px;
+  width: 200px;
+  font-family: "VT323", monospace;
 }
 
 .input-player:focus {
@@ -232,7 +235,29 @@ body {
   margin-bottom: 30px;
 }
 
+.avatars {
+  display: flex;
+  gap: 10px;
+}
 
+.enemy {
+  cursor: pointer;
+}
+
+/* .enemy:active {
+  box-shadow: none;
+  transform: translate(-2px, 2px);
+} */
+
+.selected {
+  box-shadow: none;
+  transform: translate(-2px, 2px);
+}
+
+.disable {
+  pointer-events: none;
+  background-color: #b6b6b6;
+}
 /*
  * ----------------------------------------
  * animation slide-out-blurred-top
@@ -286,7 +311,6 @@ body {
     opacity: 0;
   }
 }
-
 
 /*
  * ----------------------------------------

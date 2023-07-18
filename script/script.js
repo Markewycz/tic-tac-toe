@@ -15,7 +15,12 @@ const gameBoard = (() => {
   const resetBoard = () => board.fill("");
 
   const setField = (playerSign, id) => {
-    board[id - 1] = playerSign;
+    if (board[id] === "") {
+      board[id] = playerSign;
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const renderBoard = () => {
@@ -38,6 +43,30 @@ const gameBoard = (() => {
 
 const displayController = (() => {
   const menuContainer = document.querySelector(".menu-container");
+  const selectEnemy = () => {
+    const enemys = document.querySelectorAll(".enemy");
+    const playerTwoInput = document.getElementById("playerTwo");
+
+    enemys.forEach((enemy) => {
+      enemy.addEventListener("click", (e) => {
+        if (enemy.classList.contains("selected")) return;
+        if (!enemy.classList.contains("selected")) {
+          enemys.forEach((enemy) => {
+            enemy.classList.remove("selected");
+          });
+          enemy.classList.add("selected");
+        }
+
+        if (enemys[1].classList.contains("selected")) {
+          gameController.setVsAi(true);
+          playerTwoInput.classList.add("disable");
+        } else {
+          gameController.setVsAi(false);
+          playerTwoInput.classList.remove("disable");
+        }
+      });
+    });
+  };
   const hideMenu = () => {
     const menuContent = document.querySelector(".menu-content");
     menuContent.classList.remove("slide-in-left");
@@ -95,11 +124,14 @@ const displayController = (() => {
       field.textContent = "";
     });
   };
-  return { resetFields, hideMenu, showWinner, showTie };
+  return { resetFields, hideMenu, showWinner, showTie, selectEnemy };
 })();
 
 const gameController = (() => {
   let activePlayer, player1, player2, handler;
+  let vsAi = false;
+  let isAITurn = false;
+  let isUserTurn = true;
 
   const winConditions = [
     // ROWS
@@ -115,6 +147,40 @@ const gameController = (() => {
     [2, 4, 6],
   ];
 
+  const setVsAi = (value) => (vsAi = value);
+
+  const gameInit = () => {
+    displayController.selectEnemy(vsAi);
+  };
+  const playersInit = () => {
+    if (vsAi && !player1) {
+      const playerOneInput = document.getElementById("playerOne");
+      player1 = Player("X", playerOneInput.value);
+      player2 = Player("O", "Artificial Intelligence");
+    } else {
+      if (!player1 || !player2) {
+        const playerOneInput = document.getElementById("playerOne");
+        const playerTwoInput = document.getElementById("playerTwo");
+        player1 = Player("X", playerOneInput.value);
+        player2 = Player("O", playerTwoInput.value);
+      }
+    }
+    activePlayer = player1;
+  };
+
+  const aiMove = () => {
+    if (isAITurn) {
+      let indexes = [];
+      gameBoard.board.forEach((el, index) => {
+        if (el === "") indexes.push(index);
+      });
+
+      const randomId = Math.floor(Math.random() * indexes.length);
+      gameBoard.setField(activePlayer.getSign(), indexes[randomId]);
+      isUserTurn = true;
+    }
+  };
+
   const checkWin = () => {
     const board = gameBoard.board;
     for (let i = 0; i < winConditions.length; i++) {
@@ -125,14 +191,21 @@ const gameController = (() => {
         console.log("X wins");
         displayController.showWinner(player1, player2);
         gameBoard.removeFieldListener(handler);
+        return true;
       } else if (combination.every((mark) => mark === "O")) {
         console.log("O wins");
         displayController.showWinner(player2, player1);
         gameBoard.removeFieldListener(handler);
-      } else if (!board.includes("")) {
+        return true;
+      } else if (
+        !combination.every((mark) => mark === "X") &&
+        !combination.every((mark) => mark === "O") &&
+        !board.includes("")
+      ) {
         console.log("TIE");
         displayController.showTie();
         gameBoard.removeFieldListener(handler);
+        return true;
       }
     }
   };
@@ -148,23 +221,34 @@ const gameController = (() => {
 
   const playRound = () => {
     resetGame();
-
-    if (!player1 || !player2) {
-      const playerOneInput = document.getElementById("playerOne");
-      const playerTwoInput = document.getElementById("playerTwo");
-      player1 = Player("X", playerOneInput.value);
-      player2 = Player("O", playerTwoInput.value);
-    }
-
-    activePlayer = player1;
+    playersInit();
 
     handler = (e) => {
-      const id = +e.target.dataset.id;
-      if (gameBoard.board[id - 1] === "") {
-        gameBoard.setField(activePlayer.getSign(), id);
+      if (!isUserTurn) return;
+
+      const id = +e.target.dataset.id - 1;
+
+      if (
+        activePlayer === player1 &&
+        gameBoard.setField(activePlayer.getSign(), id)
+      ) {
         gameBoard.renderBoard();
-        checkWin();
+        if (checkWin()) return;
         changePlayer();
+        isUserTurn = false;
+      }
+
+      if (vsAi && activePlayer === player2) {
+        isAITurn = true;
+        const timeoutDuration = Math.floor(Math.random() * 1400) + 700;
+
+        setTimeout(() => {
+          aiMove();
+          gameBoard.renderBoard();
+          if (checkWin()) return;
+          changePlayer();
+          isAITurn = false;
+        }, timeoutDuration);
       }
     };
 
@@ -173,5 +257,7 @@ const gameController = (() => {
     });
   };
 
-  return { playRound };
+  return { playRound, gameInit, setVsAi };
 })();
+
+gameController.gameInit();

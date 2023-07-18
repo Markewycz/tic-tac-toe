@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <script src="script/script.js" defer></script>
-    <title>Document</title>
+    <title>Tic Tac Toe</title>
   </head>
   <body>
     <main class="main">
@@ -37,7 +37,7 @@
           <h3>How you want me to call you?</h3>
         </div>
         <div class="players">
-          <div class="player-photo">
+          <div class="player-photo player1">
             <img
               src="images/player.png"
               class="player-image"
@@ -50,19 +50,26 @@
               name="name"
               id="playerOne"
               class="input-player"
-              pattern="/^.{0,10}$/"
-              required
             />
           </div>
         </div>
         <div class="middle-part"><span>VS.</span></div>
         <div class="players">
-          <div class="player-photo">
-            <img
-              src="images/player.png"
-              class="player-image"
-              alt="player avatar"
-            />
+          <div class="avatars">
+            <div class="player-photo enemy selected">
+              <img
+                src="images/player.png"
+                class="player-image"
+                alt="player avatar"
+              />
+            </div>
+            <div class="player-photo enemy">
+              <img
+                src="images/ai.png"
+                class="player-image"
+                alt="player avatar"
+              />
+            </div>
           </div>
           <div class="player-name">
             <input
@@ -70,8 +77,6 @@
               name="name"
               id="playerTwo"
               class="input-player"
-              pattern="/^.{0,10}$/"
-              required
             />
           </div>
         </div>
